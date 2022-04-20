@@ -28,7 +28,6 @@ export const DashboardSidebar = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
     noSsr: false
   });
-  console.log(lgUp)
 
   useEffect(
     () => {

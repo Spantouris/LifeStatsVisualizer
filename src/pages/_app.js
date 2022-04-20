@@ -4,6 +4,7 @@ import { createEmotionCache } from '../utils/create-emotion-cache';
 import { ThemeProvider } from '@mui/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import StatsService from 'src/services/statsService';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -16,8 +17,10 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {getLayout(<Component {...pageProps} />)}
+          <StatsService>
+            <CssBaseline />
+            {getLayout(<Component {...pageProps} />)}
+          </StatsService>
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>

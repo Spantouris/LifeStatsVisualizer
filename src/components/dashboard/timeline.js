@@ -1,7 +1,11 @@
 import { Box, Grid, Typography, Tooltip, useMediaQuery } from '@mui/material';
+import { useContext } from 'react';
+import { StatsServiceContext } from 'src/services/statsService';
 import { v4 as uuidv4 } from 'uuid';
 
-const CalculateNumberBasedOnDate = (colors, dates, squareDate) => {
+const CalculateNumberBasedOnDate = (colors, id, squareDate) => {
+    const dates = useContext(StatsServiceContext).retrieveDatesOfStat(id);
+
     const statDatesOnSquareDate = dates.filter(d => {
         const dateOfStat = new Date(d.date);
         return dateOfStat.getFullYear() == squareDate.getFullYear()
@@ -14,17 +18,17 @@ const CalculateNumberBasedOnDate = (colors, dates, squareDate) => {
 }
 
 export const Timeline = (props) => {
-    const { months, colors, dates } = props;
+    const { months, colors, id } = props;
     const spacing = 0.8;
 
     return (
         <Grid key={uuidv4()} container spacing={spacing} sx={{ border: '1px #e1e4e8 solid', padding: '5px' }}>
-            {GenerateGrid(spacing, months, colors, dates)}
+            {GenerateGrid(spacing, months, colors, id)}
         </Grid>
     );
 }
 
-function GenerateGrid(spacing, months, colors, dates) {
+function GenerateGrid(spacing, months, colors, id) {
     const rows = 7;
     const { columns, previousDate } = CalculateColumnsToShow(rows, months);
     
@@ -39,7 +43,7 @@ function GenerateGrid(spacing, months, colors, dates) {
         return [before, Array.from(Array(rows)).map((_, rowIndex) => {
             return (
                 <Grid key={uuidv4()} item>
-                    {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, dates)}
+                    {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id)}
                 </Grid>
             );
         })];
@@ -60,14 +64,14 @@ function GenerateGrid(spacing, months, colors, dates) {
     });
 }
 
-function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, dates) {
+function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id) {
     const currentDate = new Date();
     const squareDate = new Date(previousDate.getFullYear(), previousDate.getMonth(), previousDate.getDate() + columnIndex * rows + rowIndex);
     if (currentDate < squareDate)
         return <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, height: squareSize }}></Box>
 
     return <Tooltip title={squareDate.toDateString()}>
-        <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, backgroundColor: CalculateNumberBasedOnDate(colors, dates, squareDate), height: squareSize }}></Box>
+        <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, backgroundColor: CalculateNumberBasedOnDate(colors, id, squareDate), height: squareSize }}></Box>
     </Tooltip>;
 }
 

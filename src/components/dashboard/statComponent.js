@@ -4,7 +4,7 @@ import * as React from 'react';
 import { AddStatComponent } from './addStatComponent';
 
 export const StatComponent = (props) => {
-    const { statDates, statConfig } = props;
+    const { statConfig } = props;
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -39,7 +39,7 @@ export const StatComponent = (props) => {
                     </Grid>
                 </Grid>
                 <CardContent>
-                    <Timeline months={5} colors={statConfig?.colors} dates={statDates} />
+                    <Timeline months={5} colors={statConfig?.colors} id={statConfig?.id} />
                 </CardContent>
             </Card>
             <AddStatComponent handleClose={() => setOpen(false)} open={open} statConfig={statConfig} />
