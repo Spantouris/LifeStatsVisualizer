@@ -25,6 +25,7 @@
     "@mui/lab": "^5.0.0-alpha.53",
     "@mui/material": "^5.0.6",
     "@mui/styles": "^5.0.2",
+    "@mui/x-data-grid": "^5.9.0",
     "@mui/x-date-pickers": "^5.0.0-alpha.1",
     "babel-plugin-styled-components": "^2.0.7",
     "chart.js": "^3.5.1",

@@ -1,18 +1,28 @@
 import Head from 'next/head';
-import { Box, Container, Typography } from '@mui/material';
+import { StatConfigurator } from 'src/components/settings/statConfigurator';
 import { DashboardLayout } from '../components/dashboard-layout';
-import { SettingsNotifications } from '../components/settings/settings-notifications';
-import { SettingsPassword } from '../components/settings/settings-password';
+import { Box, Container, Grid } from '@mui/material';
+import { useContext } from 'react';
+import { StatsServiceContext } from 'src/services/statsService';
 
-const Settings = () => (
-  <>
-    <Head>
-      <title>
-        Settings
-      </title>
-    </Head>
-  </>
-);
+const Settings = () => {
+  const stats = useContext(StatsServiceContext).retrieveStats();
+
+  return (
+    <>
+      <Head>
+        <title>
+          Settings
+        </title>
+      </Head>
+      <Box sx={{ py: 8 }}>
+        <Container maxWidth={false}>
+          <StatConfigurator stats={stats}></StatConfigurator>
+        </Container>
+      </Box>
+    </>
+  )
+};
 
 Settings.getLayout = (page) => (
   <DashboardLayout>

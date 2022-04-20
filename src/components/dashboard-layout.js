@@ -3,12 +3,6 @@ import { DashboardNavbar } from './dashboard-navbar';
 import { Box, useMediaQuery } from '@mui/material';
 import { DashboardSidebar } from './dashboard-sidebar';
 
-const style = {
-    display: 'flex',
-    flex: '1 1 auto',
-    maxWidth: '100%',
-}
-
 export const DashboardLayout = (props) => {
   const { children } = props;
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -17,8 +11,8 @@ export const DashboardLayout = (props) => {
     noSsr: false
   });
 
-  if(lgUp)
-  {
+  const style = {};
+  if (lgUp) {
     style["paddingLeft"] = "280px";
   }
 
