@@ -78,7 +78,6 @@ const Dashboard = () => {
             {statComponents}
           </Grid>
         </Container>
-        <Button onClick={saveToLocal}>Save</Button>
       </Box>
     </>
   );

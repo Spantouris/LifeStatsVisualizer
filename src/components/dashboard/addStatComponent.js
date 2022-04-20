@@ -1,34 +1,56 @@
+import * as React from 'react';
 import { Modal } from '@mui/material';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, TextField, Slider, Button } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    padding: 4,
+    display: "flex",
+    flexDirection: 'column'
 };
 
 export const AddStatComponent = (props) => {
-    const { handleClose, open } = props;
+    const { handleClose, open, statConfig } = props;
+    const [chosenDate, setChosenDate] = React.useState(new Date());
+    const [valueChosen, setValueChosen] = React.useState(1);
 
-    return (<Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-    >
-        <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-                Text in a modal
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
-        </Box>
-    </Modal>)
+    let sliderValue = null;
+    if (statConfig.max == 1) {
+        sliderValue =
+            <>
+                <Typography id="modal-modal-subtitle" sx={{ padding: "1.5em 0em 0.5em 0em" }}>
+                    Value of the day:
+                </Typography>
+                <Slider max={2} value={valueChosen} onChange={(_, val) => setValueChosen(val)} valueLabelDisplay="auto" defaultValue={1} step={1} marks={true}></Slider>
+            </>;
+    }
+
+    const privHandleClose = () => {
+        setValueChosen(1);
+        handleClose();
+    }
+
+    return (
+        <Modal open={open} onClose={privHandleClose}>
+            <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h5" component="h2">
+                    {statConfig?.title}
+                </Typography>
+                <Typography id="modal-modal-subtitle" my={2}>
+                    Add a new day:
+                </Typography>
+                <DatePicker value={chosenDate} onChange={(val) => { setChosenDate(val) }} renderInput={(params) => <TextField {...params} />}></DatePicker>
+                {sliderValue}
+                <Button sx={{ marginTop: 2 }} variant="contained">
+                    Submit
+                </Button>
+            </Box>
+        </Modal>
+    )
 }

@@ -6,8 +6,6 @@ import { AddStatComponent } from './addStatComponent';
 export const StatComponent = (props) => {
     const { statDates, statConfig } = props;
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
 
     return (
         <>
@@ -24,7 +22,7 @@ export const StatComponent = (props) => {
                             color="primary"
                             size="small"
                             variant="contained"
-                            onClick={handleOpen}
+                            onClick={() => setOpen(true)}
                         >
                             Add new
                         </Button>
@@ -44,7 +42,7 @@ export const StatComponent = (props) => {
                     <Timeline months={5} colors={statConfig?.colors} dates={statDates} />
                 </CardContent>
             </Card>
-            <AddStatComponent handleClose={handleClose} open={open} />
+            <AddStatComponent handleClose={() => setOpen(false)} open={open} statConfig={statConfig} />
         </>
     )
 }
