@@ -53,6 +53,17 @@ const StatsService = ({ children }) => {
             stats.statConfig = [...stats.statConfig, { id: uuidv4(), title: title, max: maxValue, colors: colors }];
             this.saveStats();
         },
+        updateStat(id, title, maxValue, colors) {
+            if (stats == undefined)
+                this.retrieveStats();
+            
+            const stat = stats.statConfig.find((s) => s.id === id);
+            stat.title = title;
+            stat.maxValue = maxValue;
+            stat.colors = colors;
+            console.log(stat);
+            this.saveStats();
+        },
         removeStat(id) {
             if (stats == undefined)
                 this.retrieveStats();
@@ -61,7 +72,6 @@ const StatsService = ({ children }) => {
                 delete stats.statDates[id];
 
             stats.statConfig = stats.statConfig.filter((stat) => stat.id != id);
-            console.log(stats);
             this.saveStats();
         },
         importStats(importedStats) {

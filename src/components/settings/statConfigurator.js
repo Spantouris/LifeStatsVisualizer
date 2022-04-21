@@ -114,6 +114,14 @@ export const StatConfigurator = (props) => {
             setGridStats(statsService.retrieveStats());
             return;
         }
+
+        statsService.updateStat(id, title, maxValue);
+        setGridStats(statsService.retrieveStats());
+    }
+
+    const editStatClose = () => {
+        setStatForEdit(null);
+        setEditStatModalOpen(false);
     }
 
     return <>
@@ -138,7 +146,7 @@ export const StatConfigurator = (props) => {
             </Grid>
         </Grid>
         <DataGrid autoHeight rows={gridStats.statConfig} columns={columns} onRowDoubleClick={(row) => rowEdit(row.row)} />
-        <EditStatComponent handleClose={() => setEditStatModalOpen(false)} open={editStatModalOpen} statForEdit={statForEdit} setStatForEdit={setStatForEdit} statChanged={statChanged}></EditStatComponent>
+        <EditStatComponent handleClose={editStatClose} open={editStatModalOpen} statForEdit={statForEdit} setStatForEdit={setStatForEdit} statChanged={statChanged}></EditStatComponent>
         <Dialog
             open={deleteStatDialog}
             onClose={closeDeleteDialog}
