@@ -49,8 +49,8 @@ const StatsService = ({ children }) => {
         addStat(title, maxValue, colors) {
             if (stats == undefined)
                 this.retrieveStats();
-
-            stats.statConfig.push({ id: uuidv4(), title: title, max: maxValue, colors: colors });
+            
+            stats.statConfig = [...stats.statConfig, { id: uuidv4(), title: title, max: maxValue, colors: colors }];
             this.saveStats();
         },
         removeStat(id) {

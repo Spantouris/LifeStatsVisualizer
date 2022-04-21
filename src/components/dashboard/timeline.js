@@ -14,7 +14,7 @@ const CalculateNumberBasedOnDate = (colors, id, squareDate) => {
     });
 
     const sumOfValues = statDatesOnSquareDate.reduce((partialSum, a) => partialSum + a.value, 0);
-    return sumOfValues > colors.length ? (colors || [])[colors.length - 1] : (colors || [])[sumOfValues];
+    return sumOfValues > (colors || []).length ? (colors || [])[colors.length - 1] : (colors || [])[sumOfValues];
 }
 
 export const Timeline = (props) => {

@@ -56,7 +56,7 @@ export const StatConfigurator = (props) => {
             headerName: 'Colors',
             flex: 1,
             renderCell: (row) => {
-                return row.value.map((color) => {
+                return (row.value || []).map((color) => {
                     return <Box key={uuidv4()} sx={{ margin: '2px', width: '25px', height: '25px', background: color }}></Box>
                 })
             }
@@ -106,7 +106,15 @@ export const StatConfigurator = (props) => {
     const closeUploadDialog = () => {
         setImportFile(null);
         setImportStatDialog(false);
-    }   
+    }
+
+    const statChanged = (id, title, maxValue) => {
+        if (!id) {
+            statsService.addStat(title, maxValue);
+            setGridStats(statsService.retrieveStats());
+            return;
+        }
+    }
 
     return <>
         <Grid container sx={{ marginTop: "1em", marginBottom: '1em' }}>
@@ -130,7 +138,7 @@ export const StatConfigurator = (props) => {
             </Grid>
         </Grid>
         <DataGrid autoHeight rows={gridStats.statConfig} columns={columns} onRowDoubleClick={(row) => rowEdit(row.row)} />
-        <EditStatComponent handleClose={() => setEditStatModalOpen(false)} open={editStatModalOpen} statForEdit={statForEdit}></EditStatComponent>
+        <EditStatComponent handleClose={() => setEditStatModalOpen(false)} open={editStatModalOpen} statForEdit={statForEdit} setStatForEdit={setStatForEdit} statChanged={statChanged}></EditStatComponent>
         <Dialog
             open={deleteStatDialog}
             onClose={closeDeleteDialog}

@@ -1,8 +1,6 @@
-import { useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal } from '@mui/material';
-import { Box, Typography, TextField, Slider, Button } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import { StatsServiceContext } from 'src/services/statsService';
+import { Box, Typography, TextField, Button } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -17,50 +15,53 @@ const style = {
 };
 
 export const EditStatComponent = (props) => {
-    const statsService = useContext(StatsServiceContext);
-    const { handleClose, open } = props;
-    const [chosenDate, setChosenDate] = useState(new Date());
-    const [valueChosen, setValueChosen] = useState(1);
-    const [showError, setShowError] = useState(false);
+    const { handleClose, open, statForEdit, statChanged } = props;
+    const [showError, setShowError] = useState(null);
+    const [title, setTitle] = useState("");
+    const [maxValue, setMaxValue] = useState(1);
+
+    useEffect(() => {
+        if (!statForEdit)
+            return;
+
+        setTitle(statForEdit?.title);
+        setMaxValue(statForEdit?.max);
+    }, [statForEdit])
 
     const privHandleClose = () => {
-        setValueChosen(1);
-        setShowError(false);
+        setShowError(null);
+        setTitle("");
+        setMaxValue(1);
         handleClose();
     }
 
-    const privDateChosen = (date) => {
-        if (date > new Date()) {
-            setShowError(true);
+    const submitStat = () => {
+        if (maxValue < 1) {
             return;
         }
 
-        setShowError(false);
-        setChosenDate(date);
-    }
-
-    const submitDate = () => {
-        if (chosenDate > new Date()) {
-            setShowError(true);
-            return;
-        }
-
-        statsService.addDateForStat(statConfig.id, chosenDate, valueChosen);
+        statChanged(statForEdit?.id, title, maxValue);
         privHandleClose();
     };
 
-    const showErrorComp = showError && <Typography sx={{ marginTop: 2 }} color="red">Date must be in the past or today</Typography>
+    const maxValueChanged = (val) => {
+        val.target.value < 1 ? setShowError("Max value must be greater than 1") : setShowError(null)
+        setMaxValue(val.target.value);
+    }
+
+    const showErrorComp = showError && <Typography sx={{ marginTop: 2 }} color="red">{showError}</Typography>
+
+    const statTitle = statForEdit ? "Edit stat" : "Add stat";
 
     return (
         <Modal open={open} onClose={privHandleClose}>
             <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h5" component="h2">
+                    {statTitle}
                 </Typography>
-                <Typography id="modal-modal-subtitle" my={2}>
-                    Add a new day:
-                </Typography>
-                <DatePicker value={chosenDate} onChange={(val) => { privDateChosen(val) }} renderInput={(params) => <TextField {...params} />}></DatePicker>
-                <Button disabled={showError} sx={{ marginTop: 2 }} variant="contained" onClick={submitDate}>
+                <TextField sx={{ marginY: 3 }} label="Title" value={title} onChange={(val) => setTitle(val.target.value)} />
+                <TextField error={maxValue < 1} type='number' label="Max Value" value={maxValue} onChange={maxValueChanged} />
+                <Button disabled={showError} sx={{ marginTop: 3 }} variant="contained" onClick={submitStat}>
                     Submit
                 </Button>
                 {showErrorComp}
