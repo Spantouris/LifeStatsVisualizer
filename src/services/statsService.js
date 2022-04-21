@@ -57,11 +57,15 @@ const StatsService = ({ children }) => {
             if (stats == undefined)
                 this.retrieveStats();
 
-            if (stats.statDates[id]) 
+            if (stats.statDates[id])
                 delete stats.statDates[id];
 
             stats.statConfig = stats.statConfig.filter((stat) => stat.id != id);
             console.log(stats);
+            this.saveStats();
+        },
+        importStats(importedStats) {
+            stats = importedStats;
             this.saveStats();
         }
     }

@@ -1,4 +1,4 @@
-import { Button, Typography, Grid, IconButton, Tooltip, Dialog, DialogActions, DialogTitle } from "@mui/material"
+import { Button, Typography, Grid, IconButton, Tooltip, Dialog, DialogActions, DialogTitle, DialogContent, Stack } from "@mui/material"
 import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,13 +8,16 @@ import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
 import { v4 as uuidv4 } from 'uuid';
 import { EditStatComponent } from "./editStatComponent";
-import { useState } from "react"
+import { useState, useReducer } from "react"
 
 export const StatConfigurator = (props) => {
     const { stats, statsService } = props;
+    const [gridStats, setGridStats] = useState(stats);
     const [editStatModalOpen, setEditStatModalOpen] = useState(false);
     const [deleteStatDialog, setDeleteStatDialog] = useState(false);
+    const [importStatDialog, setImportStatDialog] = useState(false);
     const [statForEdit, setStatForEdit] = useState(null);
+    const [importFile, setImportFile] = useState(null);
 
     const rowEdit = (row) => {
         setStatForEdit(row);
@@ -89,8 +92,21 @@ export const StatConfigurator = (props) => {
     }
 
     const uploadStats = () => {
-        console.log("hello");
+        if (importFile == null)
+            return;
+        const reader = new FileReader();
+        reader.onload = (file) => {
+            statsService.importStats(JSON.parse(file.target.result));
+            setGridStats(statsService.retrieveStats());
+        }
+        reader.readAsText(importFile);
+        closeUploadDialog();
     }
+
+    const closeUploadDialog = () => {
+        setImportFile(null);
+        setImportStatDialog(false);
+    }   
 
     return <>
         <Grid container sx={{ marginTop: "1em", marginBottom: '1em' }}>
@@ -104,7 +120,7 @@ export const StatConfigurator = (props) => {
             </Grid>
             <Grid key="import-stats-button" item>
                 <Tooltip title="Import">
-                    <Button color="primary" size="small" variant="contained" sx={{ marginLeft: "20px", marginTop: "7px" }} onClick={uploadStats}><UploadIcon /></Button>
+                    <Button color="primary" size="small" variant="contained" sx={{ marginLeft: "20px", marginTop: "7px" }} onClick={() => setImportStatDialog(true)}><UploadIcon /></Button>
                 </Tooltip>
             </Grid>
             <Grid key="export-stats-button" item>
@@ -113,7 +129,7 @@ export const StatConfigurator = (props) => {
                 </Tooltip>
             </Grid>
         </Grid>
-        <DataGrid autoHeight rows={stats.statConfig} columns={columns} onRowDoubleClick={(row) => rowEdit(row.row)} />
+        <DataGrid autoHeight rows={gridStats.statConfig} columns={columns} onRowDoubleClick={(row) => rowEdit(row.row)} />
         <EditStatComponent handleClose={() => setEditStatModalOpen(false)} open={editStatModalOpen} statForEdit={statForEdit}></EditStatComponent>
         <Dialog
             open={deleteStatDialog}
@@ -125,6 +141,35 @@ export const StatConfigurator = (props) => {
             <DialogActions>
                 <Button onClick={closeDeleteDialog}>Disagree</Button>
                 <Button onClick={deleteStat} autoFocus>
+                    Agree
+                </Button>
+            </DialogActions>
+        </Dialog>
+        <Dialog
+            open={importStatDialog}
+            onClose={closeUploadDialog}
+        >
+            <DialogTitle>
+                {"Are you sure you want to import stats?"}
+            </DialogTitle>
+            <DialogContent>
+                It will override the current stats.
+                <Box sx={{ marginTop: 2 }}>
+                    <label htmlFor="contained-button-file">
+                        <input onChange={(val) => setImportFile(val.target.files[0])} accept=".json" type='file' id='contained-button-file' style={{ display: 'none' }} />
+                        <Stack direction="row" spacing={2}>
+                            <Button variant="contained" component="span">
+                                Upload
+                            </Button>
+                            <Typography sx={{ paddingTop: 1 }}>{importFile?.name}</Typography>
+                        </Stack>
+
+                    </label>
+                </Box>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={closeUploadDialog}>Disagree</Button>
+                <Button disabled={importFile == null} onClick={uploadStats} autoFocus>
                     Agree
                 </Button>
             </DialogActions>
