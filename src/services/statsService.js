@@ -22,7 +22,10 @@ const StatsService = ({ children }) => {
                 return stats;
             }
 
-            return {};
+            return {
+                statDates: {},
+                statConfig: []
+            };
         },
         saveStats() {
             localStorage.setItem(Constants.STATS_LOCAL_STORAGE, JSON.stringify(stats))
@@ -39,7 +42,7 @@ const StatsService = ({ children }) => {
 
             if (stats.statDates[id] === undefined)
                 stats.statDates[id] = []
-            
+
             stats.statDates[id].push({ id: uuidv4(), date: date, value: value });
             this.saveStats();
         },
@@ -47,13 +50,18 @@ const StatsService = ({ children }) => {
             if (stats == undefined)
                 this.retrieveStats();
 
-            if (stats === {})
-                stats = {
-                    statDates: {},
-                    statConfig: []
-                };
-
             stats.statConfig.push({ id: uuidv4(), title: title, max: maxValue, colors: colors });
+            this.saveStats();
+        },
+        removeStat(id) {
+            if (stats == undefined)
+                this.retrieveStats();
+
+            if (stats.statDates[id]) 
+                delete stats.statDates[id];
+
+            stats.statConfig = stats.statConfig.filter((stat) => stat.id != id);
+            console.log(stats);
             this.saveStats();
         }
     }

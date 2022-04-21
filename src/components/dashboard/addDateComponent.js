@@ -16,19 +16,19 @@ const style = {
     flexDirection: 'column'
 };
 
-export const AddStatComponent = (props) => {
+export const AddDateComponent = (props) => {
     const statsService = useContext(StatsServiceContext);
     const { handleClose, open, statConfig } = props;
     const [chosenDate, setChosenDate] = useState(new Date());
     const [valueChosen, setValueChosen] = useState(1);
     const [showError, setShowError] = useState(false);
 
-    let sliderValue = statConfig.max == 1 &&
+    let sliderValue = statConfig.max !== 1 &&
         <>
             <Typography id="modal-modal-subtitle" sx={{ padding: "1.5em 0em 0.5em 0em" }}>
                 Value of the day:
             </Typography>
-            <Slider min={1} max={2} value={valueChosen} onChange={(_, val) => setValueChosen(val)} valueLabelDisplay="auto" defaultValue={1} step={1} marks={true}></Slider>
+            <Slider min={1} max={statConfig.max} value={valueChosen} onChange={(_, val) => setValueChosen(val)} valueLabelDisplay="auto" defaultValue={1} step={1} marks={true}></Slider>
         </>;
 
     const privHandleClose = () => {

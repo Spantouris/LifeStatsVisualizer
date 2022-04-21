@@ -1,7 +1,7 @@
 import { Timeline } from 'src/components/dashboard/timeline';
 import { Slider, Card, CardHeader, CardContent, Button, Grid } from '@mui/material';
 import * as React from 'react';
-import { AddStatComponent } from './addStatComponent';
+import { AddDateComponent } from './addDateComponent';
 
 export const StatComponent = (props) => {
     const { statConfig } = props;
@@ -42,7 +42,7 @@ export const StatComponent = (props) => {
                     <Timeline months={5} colors={statConfig?.colors} id={statConfig?.id} />
                 </CardContent>
             </Card>
-            <AddStatComponent handleClose={() => setOpen(false)} open={open} statConfig={statConfig} />
+            <AddDateComponent handleClose={() => setOpen(false)} open={open} statConfig={statConfig} />
         </>
     )
 }

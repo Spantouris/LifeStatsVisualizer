@@ -6,7 +6,8 @@ import { useContext } from 'react';
 import { StatsServiceContext } from 'src/services/statsService';
 
 const Settings = () => {
-  const stats = useContext(StatsServiceContext).retrieveStats();
+  const statsService = useContext(StatsServiceContext);
+  const stats = statsService.retrieveStats();
 
   return (
     <>
@@ -17,7 +18,7 @@ const Settings = () => {
       </Head>
       <Box sx={{ py: 8 }}>
         <Container maxWidth={false}>
-          <StatConfigurator stats={stats}></StatConfigurator>
+          <StatConfigurator stats={stats} statsService={statsService}></StatConfigurator>
         </Container>
       </Box>
     </>
