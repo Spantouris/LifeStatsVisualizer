@@ -68,7 +68,7 @@ export const StatComponent = (props) => {
                 </CardContent>
             </Card>
             <AddDateComponent handleClose={() => setAddComponentOpen(false)} open={addComponentOpen} statConfig={statConfig} />
-            <DateHistoryComponent handleClose={() => setDateHistoryOpen(false)} open={dateHistoryOpen} statDates={statDates} statConfig={statConfig} />
+            <DateHistoryComponent handleClose={() => setDateHistoryOpen(false)} open={dateHistoryOpen} statConfig={statConfig} />
         </>
     )
 }

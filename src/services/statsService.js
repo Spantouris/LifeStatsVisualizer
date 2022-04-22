@@ -52,7 +52,13 @@ const StatsService = ({ children }) => {
                 stats.statDates[id] = {}
 
             const dateString = moment(date).format('YYYY-MM-DD');
-            stats.statDates[id][dateString] ? stats.statDates[id][dateString] += value : stats.statDates[id][dateString] = value;
+            console.log(dateString);
+            if (stats.statDates[id][dateString]) {
+                stats.statDates[id][dateString] += value
+            }
+            else {
+                stats.statDates[id][dateString] = value;
+            }
             this.saveStats();
         },
         addStat(title, maxValue, colors) {
@@ -81,6 +87,18 @@ const StatsService = ({ children }) => {
 
             stats.statConfig = stats.statConfig.filter((stat) => stat.id != id);
             this.saveStats();
+        },
+        removeDate(id, date) {
+            if (stats == undefined)
+                this.retrieveStats();
+
+            if (!stats.statDates[id])
+                return;
+
+            const dateString = moment(date).format('YYYY-MM-DD');
+            delete stats.statDates[id][dateString];
+            this.saveStats();
+            console.log(id, stats, dateString);
         },
         importStats(importedStats) {
             stats = importedStats;

@@ -1,10 +1,10 @@
 import { Modal } from '@mui/material';
 import { Box, Typography, IconButton, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StatsServiceContext } from 'src/services/statsService';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import moment from 'moment';
 
 const style = {
     position: 'absolute',
@@ -13,7 +13,6 @@ const style = {
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
     boxShadow: 24,
-    minWidth: 300,
     padding: 4,
     display: "flex",
     flexDirection: 'column'
@@ -21,12 +20,34 @@ const style = {
 
 export const DateHistoryComponent = (props) => {
     const statsService = useContext(StatsServiceContext);
-    const { handleClose, open, statConfig, statDates } = props;
+    const { handleClose, open, statConfig } = props;
     const [pageSize, setPageSize] = useState(5);
 
-    const dates = Object.keys(statDates || {}).map((date) => {
-        return { date: date, value: statDates[date] };
-    });
+    useEffect(() => {
+        setDates(calculateDatesToShow(statsService.retrieveDatesOfStat(statConfig?.id)))
+    }, [open]);
+
+    const deleteDate = (date) => {
+        statsService.removeDate(statConfig?.id, date);
+        setTimeout(() => {
+            const stats = statsService.retrieveDatesOfStat(statConfig?.id);
+            setDates(calculateDatesToShow(stats));
+        })
+    }
+
+    const calculateDatesToShow = (dates) => {
+        return Object.keys(dates || {}).map((date) => {
+            return { date: date, value: dates[date] };
+        })
+    };
+
+    const privHandleClose = () => {
+        setPageSize(5);
+        setDates([]);
+        handleClose();
+    }
+
+    const [dates, setDates] = useState([]);
 
     const columns = [
         { field: 'date', headerName: 'Date', flex: 0.8, type: 'date', valueGetter: ({ value }) => value && new Date(value) },
@@ -34,31 +55,31 @@ export const DateHistoryComponent = (props) => {
         {
             field: "actions",
             headerName: "",
+            type: 'actions',
             sortable: false,
             disableColumnMenu: true,
             flex: 0.2,
             renderCell: (row) => {
                 return <>
-                    <IconButton>
+                    <IconButton onClick={() => deleteDate(row?.row?.date)}>
                         <DeleteIcon fontSize="small" />
                     </IconButton>
                 </>
             }
         }
     ];
-
     return (
-        <Modal open={open} onClose={handleClose}>
+        <Modal open={open} onClose={privHandleClose}>
             <Box sx={style}>
                 <Stack direction="column" spacing={2}>
                     <Typography id="modal-modal-title" variant="h5" component="h2">
                         {statConfig?.title}
                     </Typography>
-                    <DataGrid autoHeight rows={dates} columns={columns} getRowId={(row) => row.date} pageSize={pageSize} onPageSizeChange={setPageSize} rowsPerPageOptions={[5,10,25]} initialState={{
+                    <DataGrid autoHeight rows={dates} columns={columns} getRowId={(row) => moment(row.date).format('YYYY-MM-DD')} pageSize={pageSize} onPageSizeChange={setPageSize} rowsPerPageOptions={[5, 10, 25]} initialState={{
                         sorting: {
                             sortModel: [{ field: 'date', sort: 'desc' }],
-                        },
-                    }} />
+                        }
+                    }} throttleRowsMs={2000} />
                 </Stack>
             </Box>
         </Modal >

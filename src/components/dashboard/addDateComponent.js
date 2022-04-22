@@ -33,6 +33,7 @@ export const AddDateComponent = (props) => {
 
     const privHandleClose = () => {
         setValueChosen(1);
+        setChosenDate(new Date());
         setShowError(false);
         handleClose();
     }
