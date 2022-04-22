@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
 import { v4 as uuidv4 } from 'uuid';
 import { EditStatComponent } from "./editStatComponent";
-import { useState, useReducer } from "react"
+import { useState } from "react"
 
 export const StatConfigurator = (props) => {
     const { stats, statsService } = props;
@@ -50,7 +50,7 @@ export const StatConfigurator = (props) => {
     const columns = [
         { field: 'id', headerName: 'Stat', flex: 1 },
         { field: 'title', headerName: 'Title', flex: 1 },
-        { field: 'max', headerName: 'Max value', flex: 1 },
+        { field: 'max', headerName: 'Max value', flex: 0.3 },
         {
             field: 'colors',
             headerName: 'Colors',
@@ -108,14 +108,14 @@ export const StatConfigurator = (props) => {
         setImportStatDialog(false);
     }
 
-    const statChanged = (id, title, maxValue) => {
+    const statChanged = (id, title, maxValue, colors) => {
         if (!id) {
-            statsService.addStat(title, maxValue);
+            statsService.addStat(title, maxValue, colors);
             setGridStats(statsService.retrieveStats());
             return;
         }
 
-        statsService.updateStat(id, title, maxValue);
+        statsService.updateStat(id, title, maxValue, colors);
         setGridStats(statsService.retrieveStats());
     }
 

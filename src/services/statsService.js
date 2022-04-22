@@ -61,7 +61,6 @@ const StatsService = ({ children }) => {
             stat.title = title;
             stat.maxValue = maxValue;
             stat.colors = colors;
-            console.log(stat);
             this.saveStats();
         },
         removeStat(id) {
