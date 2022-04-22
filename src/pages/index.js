@@ -10,7 +10,7 @@ import { useContext } from 'react';
 const Dashboard = () => {
   const stats = useContext(StatsServiceContext).retrieveStats();
   const statComponents = (stats?.statConfig || []).map((stat) => <Grid key={uuidv4()} item sm={12} md={10} lg={10} xl={6}>
-    <StatComponent statConfig={stat} />
+    <StatComponent statConfig={stat} statDates={stats?.statDates[stat?.id]} />
   </Grid>);
 
   return (

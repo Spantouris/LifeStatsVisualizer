@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import { Constants } from "src/utils/constants";
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
 export const StatsServiceContext = createContext(undefined);
 
@@ -30,6 +31,13 @@ const StatsService = ({ children }) => {
         saveStats() {
             localStorage.setItem(Constants.STATS_LOCAL_STORAGE, JSON.stringify(stats))
         },
+        clearStats() {
+            stats = {
+                statDates: {},
+                statConfig: []
+            };
+            this.saveStats();
+        },
         retrieveDatesOfStat(id) {
             if (stats == undefined)
                 this.retrieveStats();
@@ -41,22 +49,23 @@ const StatsService = ({ children }) => {
                 this.retrieveStats();
 
             if (stats.statDates[id] === undefined)
-                stats.statDates[id] = []
+                stats.statDates[id] = {}
 
-            stats.statDates[id].push({ id: uuidv4(), date: date, value: value });
+            const dateString = moment(date).format('YYYY-MM-DD');
+            stats.statDates[id][dateString] ? stats.statDates[id][dateString] += value : stats.statDates[id][dateString] = value;
             this.saveStats();
         },
         addStat(title, maxValue, colors) {
             if (stats == undefined)
                 this.retrieveStats();
-            
+
             stats.statConfig = [...stats.statConfig, { id: uuidv4(), title: title, max: maxValue, colors: colors }];
             this.saveStats();
         },
         updateStat(id, title, maxValue, colors) {
             if (stats == undefined)
                 this.retrieveStats();
-            
+
             const stat = stats.statConfig.find((s) => s.id === id);
             stat.title = title;
             stat.maxValue = maxValue;

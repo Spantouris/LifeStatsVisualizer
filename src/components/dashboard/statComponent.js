@@ -3,12 +3,14 @@ import { Select, Card, CardHeader, CardContent, Button, Grid, MenuItem, Typograp
 import { DatePicker } from '@mui/x-date-pickers';
 import * as React from 'react';
 import { AddDateComponent } from './addDateComponent';
+import { DateHistoryComponent } from './dateHistoryComponent';
 
 export const StatComponent = (props) => {
-    const { statConfig } = props;
-    const [open, setOpen] = React.useState(false);
+    const { statConfig, statDates } = props;
+    const [addComponentOpen, setAddComponentOpen] = React.useState(false);
     const [months, setMonths] = React.useState(6);
     const [endDate, setEndDate] = React.useState(new Date());
+    const [dateHistoryOpen, setDateHistoryOpen] = React.useState(false);
 
     return (
         <>
@@ -25,7 +27,7 @@ export const StatComponent = (props) => {
                             color="primary"
                             size="small"
                             variant="contained"
-                            onClick={() => setOpen(true)}
+                            onClick={() => setAddComponentOpen(true)}
                         >
                             Add new
                         </Button>
@@ -36,6 +38,7 @@ export const StatComponent = (props) => {
                             color="primary"
                             size="small"
                             variant="contained"
+                            onClick={() => setDateHistoryOpen(true)}
                         >
                             History
                         </Button>
@@ -61,10 +64,11 @@ export const StatComponent = (props) => {
                     </Grid>
                 </Grid>
                 <CardContent>
-                    <Timeline months={months} colors={statConfig?.colors} id={statConfig?.id} endDate={endDate} />
+                    <Timeline months={months} colors={statConfig?.colors} endDate={endDate} dates={statDates}/>
                 </CardContent>
             </Card>
-            <AddDateComponent handleClose={() => setOpen(false)} open={open} statConfig={statConfig} />
+            <AddDateComponent handleClose={() => setAddComponentOpen(false)} open={addComponentOpen} statConfig={statConfig} />
+            <DateHistoryComponent handleClose={() => setDateHistoryOpen(false)} open={dateHistoryOpen} statDates={statDates} statConfig={statConfig} />
         </>
     )
 }

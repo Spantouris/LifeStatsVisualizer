@@ -1,34 +1,25 @@
 import { Box, Grid, Typography, Tooltip, useMediaQuery } from '@mui/material';
-import { useContext } from 'react';
-import { StatsServiceContext } from 'src/services/statsService';
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
-const CalculateNumberBasedOnDate = (colors, id, squareDate) => {
-    const dates = useContext(StatsServiceContext).retrieveDatesOfStat(id);
-
-    const statDatesOnSquareDate = dates.filter(d => {
-        const dateOfStat = new Date(d.date);
-        return dateOfStat.getFullYear() == squareDate.getFullYear()
-            && dateOfStat.getMonth() == squareDate.getMonth()
-            && dateOfStat.getDate() == squareDate.getDate()
-    });
-
-    const sumOfValues = statDatesOnSquareDate.reduce((partialSum, a) => partialSum + a.value, 0);
+const CalculateNumberBasedOnDate = (colors, squareDate, dates) => {
+    const date = moment(squareDate);
+    const sumOfValues = (dates || {})[date.format('YYYY-MM-DD')] || 0;
     return sumOfValues > (colors || []).length ? (colors || [])[colors.length - 1] : (colors || [])[sumOfValues];
 }
 
 export const Timeline = (props) => {
-    const { months, colors, id, endDate } = props;
+    const { months, colors, endDate, dates } = props;
     const spacing = 0.8;
 
     return (
         <Grid key={uuidv4()} container spacing={spacing} sx={{ border: '1px #e1e4e8 solid', padding: '5px' }}>
-            {GenerateGrid(spacing, months, colors, id, endDate)}
+            {GenerateGrid(spacing, months, colors, endDate, dates)}
         </Grid>
     );
 }
 
-function GenerateGrid(spacing, months, colors, id, endDate) {
+function GenerateGrid(spacing, months, colors, endDate, dates) {
     const rows = 7;
     const { columns, previousDate } = CalculateColumnsToShow(rows, months, endDate);
     
@@ -43,7 +34,7 @@ function GenerateGrid(spacing, months, colors, id, endDate) {
         return [before, Array.from(Array(rows)).map((_, rowIndex) => {
             return (
                 <Grid key={uuidv4()} item>
-                    {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id, endDate)}
+                    {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, endDate, dates)}
                 </Grid>
             );
         })];
@@ -64,14 +55,14 @@ function GenerateGrid(spacing, months, colors, id, endDate) {
     });
 }
 
-function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id, endDate) {
+function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, endDate, dates) {
     const currentDate = endDate;
     const squareDate = new Date(previousDate.getFullYear(), previousDate.getMonth(), previousDate.getDate() + columnIndex * rows + rowIndex);
     if (currentDate < squareDate)
         return <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, height: squareSize }}></Box>
 
     return <Tooltip title={squareDate.toDateString()}>
-        <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, backgroundColor: CalculateNumberBasedOnDate(colors, id, squareDate), height: squareSize }}></Box>
+        <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, backgroundColor: CalculateNumberBasedOnDate(colors, squareDate, dates), height: squareSize }}></Box>
     </Tooltip>;
 }
 
