@@ -1,7 +1,7 @@
 import { Modal } from '@mui/material';
 import { Box, Typography, IconButton, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { StatsServiceContext } from 'src/services/statsService';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,6 +22,7 @@ const style = {
 export const DateHistoryComponent = (props) => {
     const statsService = useContext(StatsServiceContext);
     const { handleClose, open, statConfig, statDates } = props;
+    const [pageSize, setPageSize] = useState(5);
 
     const dates = Object.keys(statDates || {}).map((date) => {
         return { date: date, value: statDates[date] };
@@ -53,7 +54,7 @@ export const DateHistoryComponent = (props) => {
                     <Typography id="modal-modal-title" variant="h5" component="h2">
                         {statConfig?.title}
                     </Typography>
-                    <DataGrid autoHeight rows={dates} columns={columns} getRowId={(row) => row.date} pageSize={5} initialState={{
+                    <DataGrid autoHeight rows={dates} columns={columns} getRowId={(row) => row.date} pageSize={pageSize} onPageSizeChange={setPageSize} rowsPerPageOptions={[5,10,25]} initialState={{
                         sorting: {
                             sortModel: [{ field: 'date', sort: 'desc' }],
                         },
