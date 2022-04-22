@@ -18,19 +18,19 @@ const CalculateNumberBasedOnDate = (colors, id, squareDate) => {
 }
 
 export const Timeline = (props) => {
-    const { months, colors, id } = props;
+    const { months, colors, id, endDate } = props;
     const spacing = 0.8;
 
     return (
         <Grid key={uuidv4()} container spacing={spacing} sx={{ border: '1px #e1e4e8 solid', padding: '5px' }}>
-            {GenerateGrid(spacing, months, colors, id)}
+            {GenerateGrid(spacing, months, colors, id, endDate)}
         </Grid>
     );
 }
 
-function GenerateGrid(spacing, months, colors, id) {
+function GenerateGrid(spacing, months, colors, id, endDate) {
     const rows = 7;
-    const { columns, previousDate } = CalculateColumnsToShow(rows, months);
+    const { columns, previousDate } = CalculateColumnsToShow(rows, months, endDate);
     
     const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
         noSsr: false
@@ -43,7 +43,7 @@ function GenerateGrid(spacing, months, colors, id) {
         return [before, Array.from(Array(rows)).map((_, rowIndex) => {
             return (
                 <Grid key={uuidv4()} item>
-                    {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id)}
+                    {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id, endDate)}
                 </Grid>
             );
         })];
@@ -64,8 +64,8 @@ function GenerateGrid(spacing, months, colors, id) {
     });
 }
 
-function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id) {
-    const currentDate = new Date();
+function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, id, endDate) {
+    const currentDate = endDate;
     const squareDate = new Date(previousDate.getFullYear(), previousDate.getMonth(), previousDate.getDate() + columnIndex * rows + rowIndex);
     if (currentDate < squareDate)
         return <Box key={columnIndex + ',' + rowIndex} sx={{ width: squareSize, height: squareSize }}></Box>
@@ -75,8 +75,8 @@ function GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, c
     </Tooltip>;
 }
 
-function CalculateColumnsToShow(rows, months) {
-    const currentDate = new Date();
+function CalculateColumnsToShow(rows, months, endDate) {
+    const currentDate = endDate;
     const previousDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - months, currentDate.getDate());
     previousDate.setDate(currentDate.getDate() - previousDate.getDay());
     const diffDays = Math.ceil((currentDate - previousDate) / (1000 * 60 * 60 * 24));

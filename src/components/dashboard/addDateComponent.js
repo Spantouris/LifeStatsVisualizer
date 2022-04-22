@@ -28,7 +28,7 @@ export const AddDateComponent = (props) => {
             <Typography id="modal-modal-subtitle" sx={{ padding: "1.5em 0em 0.5em 0em" }}>
                 Value of the day:
             </Typography>
-            <Slider min={1} max={statConfig.max} value={valueChosen} onChange={(_, val) => setValueChosen(val)} valueLabelDisplay="auto" defaultValue={1} step={1} marks={true}></Slider>
+            <Slider min={1} max={statConfig.max} value={valueChosen} onChange={(_, val) => setValueChosen(val)} valueLabelDisplay="auto" defaultValue={1} step={1} marks={true} />
         </>;
 
     const privHandleClose = () => {
@@ -68,7 +68,7 @@ export const AddDateComponent = (props) => {
                 <Typography id="modal-modal-subtitle" my={2}>
                     Add a new day:
                 </Typography>
-                <DatePicker value={chosenDate} onChange={(val) => { privDateChosen(val) }} renderInput={(params) => <TextField {...params} />}></DatePicker>
+                <DatePicker value={chosenDate} onChange={(val) => { privDateChosen(val) }} renderInput={(params) => <TextField {...params} />} disableFuture={true} />
                 {sliderValue}
                 <Button disabled={showError} sx={{ marginTop: 2 }} variant="contained" onClick={submitDate}>
                     Submit
