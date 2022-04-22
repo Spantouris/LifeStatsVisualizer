@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import UploadIcon from '@mui/icons-material/Upload';
 import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { v4 as uuidv4 } from 'uuid';
 import { EditStatComponent } from "./editStatComponent";
 import { useState } from "react"
@@ -15,6 +16,7 @@ export const StatConfigurator = (props) => {
     const [gridStats, setGridStats] = useState(stats);
     const [editStatModalOpen, setEditStatModalOpen] = useState(false);
     const [deleteStatDialog, setDeleteStatDialog] = useState(false);
+    const [clearStatDialog, setClearStatDialog] = useState(false);
     const [importStatDialog, setImportStatDialog] = useState(false);
     const [statForEdit, setStatForEdit] = useState(null);
     const [importFile, setImportFile] = useState(null);
@@ -124,6 +126,13 @@ export const StatConfigurator = (props) => {
         setEditStatModalOpen(false);
     }
 
+    const clearStats = () =>
+    {
+        statsService.clearStats();
+        setClearStatDialog(false)
+        setGridStats(statsService.retrieveStats());
+    }
+
     return <>
         <Grid container sx={{ marginTop: "1em", marginBottom: '1em' }}>
             <Grid key="stats-header" item>
@@ -144,6 +153,11 @@ export const StatConfigurator = (props) => {
                     <Button color="primary" size="small" variant="contained" sx={{ marginLeft: "20px", marginTop: "7px" }} onClick={exportStats}><DownloadIcon /></Button>
                 </Tooltip>
             </Grid>
+            <Grid key="clear-stats-button" item>
+                <Tooltip title="Clear">
+                    <Button color="primary" size="small" variant="contained" sx={{ marginLeft: "20px", marginTop: "7px" }} onClick={() => setClearStatDialog(true)}><DeleteForeverIcon /></Button>
+                </Tooltip>
+            </Grid>
         </Grid>
         <DataGrid autoHeight rows={gridStats.statConfig} columns={columns} onRowDoubleClick={(row) => rowEdit(row.row)} />
         <EditStatComponent handleClose={editStatClose} open={editStatModalOpen} statForEdit={statForEdit} setStatForEdit={setStatForEdit} statChanged={statChanged}></EditStatComponent>
@@ -157,6 +171,20 @@ export const StatConfigurator = (props) => {
             <DialogActions>
                 <Button onClick={closeDeleteDialog}>Disagree</Button>
                 <Button onClick={deleteStat} autoFocus>
+                    Agree
+                </Button>
+            </DialogActions>
+        </Dialog>
+        <Dialog
+            open={clearStatDialog}
+            onClose={() => setClearStatDialog(false)}
+        >
+            <DialogTitle>
+                {"Are you sure you want to clear all stats?"}
+            </DialogTitle>
+            <DialogActions>
+                <Button onClick={() => setClearStatDialog(false)}>Disagree</Button>
+                <Button onClick={clearStats} autoFocus>
                     Agree
                 </Button>
             </DialogActions>
