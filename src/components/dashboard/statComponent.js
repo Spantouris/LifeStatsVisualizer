@@ -1,16 +1,28 @@
 import { Timeline } from 'src/components/dashboard/timeline';
 import { Select, Card, CardHeader, CardContent, Button, Grid, MenuItem, Typography, Stack, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import * as React from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { AddDateComponent } from './addDateComponent';
 import { DateHistoryComponent } from './dateHistoryComponent';
+import { StatsServiceContext } from 'src/services/statsService';
 
 export const StatComponent = (props) => {
+    const statsService = useContext(StatsServiceContext);
     const { statConfig, statDates } = props;
-    const [addComponentOpen, setAddComponentOpen] = React.useState(false);
-    const [months, setMonths] = React.useState(6);
-    const [endDate, setEndDate] = React.useState(new Date());
-    const [dateHistoryOpen, setDateHistoryOpen] = React.useState(false);
+    const [addComponentOpen, setAddComponentOpen] = useState(false);
+    const [months, setMonths] = useState(6);
+    const [endDate, setEndDate] = useState(new Date());
+    const [dateHistoryOpen, setDateHistoryOpen] = useState(false);
+    const [dates, setDates] = useState([]);
+
+    useEffect(() => {
+        setDates(statDates);
+    }, [statDates]);
+
+    const handleAddClose = () => {
+        setDates(statsService.retrieveDatesOfStat(statConfig?.id));
+        setAddComponentOpen(false);
+    }
 
     return (
         <>
@@ -64,10 +76,10 @@ export const StatComponent = (props) => {
                     </Grid>
                 </Grid>
                 <CardContent>
-                    <Timeline months={months} colors={statConfig?.colors} endDate={endDate} dates={statDates}/>
+                    <Timeline months={months} colors={statConfig?.colors} endDate={endDate} dates={dates} />
                 </CardContent>
             </Card>
-            <AddDateComponent handleClose={() => setAddComponentOpen(false)} open={addComponentOpen} statConfig={statConfig} />
+            <AddDateComponent handleClose={handleAddClose} open={addComponentOpen} statConfig={statConfig} />
             <DateHistoryComponent handleClose={() => setDateHistoryOpen(false)} open={dateHistoryOpen} statConfig={statConfig} />
         </>
     )
