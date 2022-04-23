@@ -1,5 +1,4 @@
 import { Box, Grid, Typography, Tooltip, useMediaQuery } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
 const CalculateNumberBasedOnDate = (colors, squareDate, dates) => {
@@ -13,7 +12,7 @@ export const Timeline = (props) => {
     const spacing = 0.8;
 
     return (
-        <Grid key={uuidv4()} container spacing={spacing} sx={{ border: '1px #e1e4e8 solid', padding: '5px' }}>
+        <Grid key={'timeline-grid'} container spacing={spacing} sx={{ border: '1px #e1e4e8 solid', padding: '5px' }}>
             {GenerateGrid(spacing, months, colors, endDate, dates)}
         </Grid>
     );
@@ -33,7 +32,7 @@ function GenerateGrid(spacing, months, colors, endDate, dates) {
         let before = GenerateMonthFromIndex(columnIndex, squareSize, previousDate, rows);
         return [before, Array.from(Array(rows)).map((_, rowIndex) => {
             return (
-                <Grid key={uuidv4()} item>
+                <Grid key={`${rowIndex},${columnIndex}`} item>
                     {GenerateSquare(previousDate, columnIndex, rows, rowIndex, squareSize, colors, endDate, dates)}
                 </Grid>
             );
@@ -46,8 +45,8 @@ function GenerateGrid(spacing, months, colors, endDate, dates) {
         }
 
         return (
-            <Grid item key={uuidv4()}>
-                <Grid key={uuidv4()} container spacing={spacing} direction={'column'}>
+            <Grid item key={`column-${columnIndex}`}>
+                <Grid key={`column-${columnIndex}-grid`} container spacing={spacing} direction={'column'}>
                     {rowGrid(columnIndex - 1)}
                 </Grid>
             </Grid>
@@ -79,22 +78,22 @@ function GenerateMonthFromIndex(columnIndex, squareSize, firstDay, rows) {
     const dateAfterWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 6);
 
     if (dateAfterWeek.getMonth() != currentDate.getMonth() || currentDate.getDate() == 1)
-        return <Typography key={uuidv4()}>{dateAfterWeek.toLocaleDateString("en-us", { month: 'short' })}</Typography>;
+        return <Typography key={`month-${columnIndex}`}>{dateAfterWeek.toLocaleDateString("en-us", { month: 'short' })}</Typography>;
 
     return <Box key={'default' + columnIndex} sx={{ width: squareSize, backgroundColor: 'white', height: squareSize + 6 }}></Box>;
 }
 
 function GenerateDaysRow(spacing, rows, squareSize) {
-    return <Grid key={uuidv4()} item>
-        <Grid key={uuidv4()} container spacing={spacing} direction={'column'} mx={0.5}>
+    return <Grid key={"first-column"} item>
+        <Grid key={"days-column"} container spacing={spacing} direction={'column'} mx={0.5}>
             {Array.from(Array(rows + 1)).map((_, rowIndex) => {
                 switch (rowIndex) {
                     case 2:
-                        return <Typography key={uuidv4()}>Mon</Typography>;
+                        return <Typography key={"monday"}>Mon</Typography>;
                     case 4:
-                        return <Typography key={uuidv4()}>Wed</Typography>;
+                        return <Typography key={"wednesday"}>Wed</Typography>;
                     case 6:
-                        return <Typography key={uuidv4()}>Fri</Typography>;
+                        return <Typography key={"friday"}>Fri</Typography>;
                     default:
                         return <Box key={'default-days' + rowIndex} sx={{ width: squareSize, backgroundColor: 'white', height: squareSize + 8 }}></Box>;
                 }

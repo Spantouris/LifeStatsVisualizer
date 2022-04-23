@@ -52,7 +52,7 @@ const StatsService = ({ children }) => {
                 stats.statDates[id] = {}
 
             const dateString = moment(date).format('YYYY-MM-DD');
-            console.log(dateString);
+
             if (stats.statDates[id][dateString]) {
                 stats.statDates[id][dateString] += value
             }
@@ -98,7 +98,6 @@ const StatsService = ({ children }) => {
             const dateString = moment(date).format('YYYY-MM-DD');
             delete stats.statDates[id][dateString];
             this.saveStats();
-            console.log(id, stats, dateString);
         },
         importStats(importedStats) {
             stats = importedStats;

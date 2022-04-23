@@ -7,7 +7,6 @@ import UploadIcon from '@mui/icons-material/Upload';
 import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { v4 as uuidv4 } from 'uuid';
 import { EditStatComponent } from "./editStatComponent";
 import { useState } from "react"
 
@@ -58,8 +57,8 @@ export const StatConfigurator = (props) => {
             headerName: 'Colors',
             flex: 1,
             renderCell: (row) => {
-                return (row.value || []).map((color) => {
-                    return <Box key={uuidv4()} sx={{ margin: '2px', width: '25px', height: '25px', background: color }}></Box>
+                return (row.value || []).map((color, index) => {
+                    return <Box key={`row-${row.id}-color-${index}`} sx={{ margin: '2px', width: '25px', height: '25px', background: color }}></Box>
                 })
             }
         },
