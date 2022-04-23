@@ -49,7 +49,6 @@ export const StatConfigurator = (props) => {
     }
 
     const columns = [
-        { field: 'id', headerName: 'Stat', flex: 1 },
         { field: 'title', headerName: 'Title', flex: 1 },
         { field: 'max', headerName: 'Max value', flex: 0.3 },
         {

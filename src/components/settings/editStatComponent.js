@@ -3,7 +3,6 @@ import { Modal, NoSsr, Stack } from '@mui/material';
 import { Box, Typography, TextField, Button, Tooltip, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { v4 as uuidv4 } from 'uuid';
 import { ColorPickerComponent } from './colorPickerComponent';
 
 const style = {
@@ -74,7 +73,7 @@ export const EditStatComponent = (props) => {
     const showErrorComp = showError && <Typography sx={{ marginTop: 2 }} color="red">{showError}</Typography>
 
     const colorsComp = (colors || []).map((color, index) =>
-        <Stack key={uuidv4()} direction="row" spacing={2} justifyContent='center'>
+        <Stack key={`stack-${index}`} direction="row" spacing={2} justifyContent='center'>
             <Typography sx={{ marginTop: "8px", marginRight: "20px" }} key={"number-of-color" + index}>{index}.</Typography>
             <ColorPickerComponent key={"color-picker" + index} color={color} changeColor={(color) => colors[index] = color} />
             <IconButton key={"delete-icon" + index} onClick={() => deleteColor(index)}>
