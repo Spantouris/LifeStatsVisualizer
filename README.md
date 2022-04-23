@@ -3,7 +3,7 @@
 ## Export
 - Install dependencies: `npm install` or `yarn`
 
-- Run `npm run export`
+- Run `npm run build` and `npm run export`
 
 - Site is in the `out` folder
 
