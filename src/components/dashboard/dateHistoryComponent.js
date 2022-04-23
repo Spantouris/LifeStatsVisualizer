@@ -22,6 +22,7 @@ export const DateHistoryComponent = (props) => {
     const statsService = useContext(StatsServiceContext);
     const { handleClose, open, statConfig } = props;
     const [pageSize, setPageSize] = useState(5);
+    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         setDates(calculateDatesToShow(statsService.retrieveDatesOfStat(statConfig?.id)))
@@ -44,17 +45,32 @@ export const DateHistoryComponent = (props) => {
     const privHandleClose = () => {
         setPageSize(5);
         setDates([]);
+        setShowError(false);
         handleClose();
     }
 
     const [dates, setDates] = useState([]);
 
+    const processRowUpdate = (newRow) => {
+        return new Promise((resolve, reject) => {
+            statsService.updateDate(statConfig?.id, newRow.date, newRow.value);
+            resolve(newRow);
+        });
+    }
+
     const columns = [
-        { field: 'date', headerName: 'Date', flex: 0.8, type: 'date', valueGetter: ({ value }) => value && new Date(value) },
-        { field: 'value', headerName: 'Value', flex: 0.4 },
+        { field: 'date', headerName: 'Date', flex: 0.8, type: 'date', valueGetter: ({ value }) => value && new Date(value), editable: false },
+        {
+            field: 'value', headerName: 'Value', flex: 0.4, editable: true, preProcessEditCellProps: (params) => {
+                const hasError = !params.props.value || params.props.value <= 0;
+                setShowError(hasError);
+                return { error: hasError };
+            },
+        },
         {
             field: "actions",
             headerName: "",
+            editable: false,
             type: 'actions',
             sortable: false,
             disableColumnMenu: true,
@@ -68,6 +84,9 @@ export const DateHistoryComponent = (props) => {
             }
         }
     ];
+
+    const showErrorComp = showError && <Typography sx={{ marginTop: 2 }} color="red">Value must be greater than 1</Typography>
+
     return (
         <Modal open={open} onClose={privHandleClose}>
             <Box sx={style}>
@@ -79,7 +98,8 @@ export const DateHistoryComponent = (props) => {
                         sorting: {
                             sortModel: [{ field: 'date', sort: 'desc' }],
                         }
-                    }} throttleRowsMs={2000} />
+                    }} throttleRowsMs={2000} experimentalFeatures={{ newEditingApi: true }} processRowUpdate={processRowUpdate} />
+                    {showErrorComp}
                 </Stack>
             </Box>
         </Modal >

@@ -88,6 +88,18 @@ const StatsService = ({ children }) => {
             stats.statConfig = stats.statConfig.filter((stat) => stat.id != id);
             this.saveStats();
         },
+        updateDate(id, date, value)
+        {
+            if (stats == undefined)
+                this.retrieveStats();
+            
+            const dateString = moment(date).format('YYYY-MM-DD');
+            if (!stats.statDates[id] || !stats.statDates[id][dateString])
+                return;
+
+            stats.statDates[id][dateString] = value;
+            this.saveStats();
+        },
         removeDate(id, date) {
             if (stats == undefined)
                 this.retrieveStats();
