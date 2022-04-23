@@ -3,8 +3,8 @@ import moment from 'moment';
 
 const CalculateNumberBasedOnDate = (colors, squareDate, dates) => {
     const date = moment(squareDate);
-    const sumOfValues = (dates || {})[date.format('YYYY-MM-DD')] || 0;
-    return sumOfValues > (colors || []).length ? (colors || [])[colors.length - 1] : (colors || [])[sumOfValues];
+    const sumOfValues = (dates || {})[date.format('YYYY-MM-DD')] || 0;    
+    return sumOfValues >= (colors || []).length ? (colors || [])[colors.length - 1] : (colors || [])[sumOfValues];
 }
 
 export const Timeline = (props) => {
