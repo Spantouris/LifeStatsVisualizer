@@ -75,7 +75,7 @@ const StatsService = ({ children }) => {
 
             const stat = stats.statConfig.find((s) => s.id === id);
             stat.title = title;
-            stat.maxValue = maxValue;
+            stat.max = maxValue;
             stat.colors = colors;
             this.saveStats();
         },
