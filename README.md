@@ -1,5 +1,7 @@
 # Life stats visualizer
 
+![Dashboard](/docs/screenshot.png)
+
 ## Export
 - Install dependencies: `npm install` or `yarn`
 
